@@ -1,124 +1,107 @@
-# BankMate – Core Banking System
+# BankMate - Core Banking System
 
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[GitHub Repository](https://github.com/kaifcode2003/Bank-Management-System)
+Full-stack project with Node.js (Express) + MongoDB + JWT + bcrypt on the backend and React + Vite + Tailwind on the frontend. Deployment targets: Render (backend) and Vercel (frontend).
 
----
+## Monorepo Structure
 
-## Overview
+- `backend/` — Express API with Mongoose, JWT auth, RBAC, and transactions
+- `frontend/` — Vite + React + Tailwind application
 
-**BankMate** is a full-stack core banking application designed to simulate real-world financial operations. It provides a secure backend API for account management and financial transactions, along with a responsive, multi-page frontend dashboard for users to monitor and manage their finances.
+## Requirements
 
-The system demonstrates key banking features such as account creation, deposits, withdrawals, transfers, and visual dashboards with analytics.
+- Node.js 18+
+- MongoDB 6+
 
----
+## Backend Setup
 
-## Features
-
-* **Secure User Authentication**: JWT-based authentication and password hashing with bcrypt.js.
-* **Account Management**: Create and manage user accounts, view balances and transaction history.
-* **Financial Transactions**: Perform deposits, withdrawals, and inter-account transfers with atomic transaction handling.
-* **Frontend Dashboard**: Responsive, multi-page UI built with HTML, Tailwind CSS, and JavaScript.
-* **Data Visualizations**: Interactive charts using Chart.js for monthly income, expenses, and transaction analytics.
-* **Modular Backend Architecture**: Clean separation of controllers, routes, middleware, and database configuration for maintainability and scalability.
-
----
-
-## Tech Stack
-
-* **Backend**: Node.js, Express.js
-* **Database**: SQLite
-* **Authentication**: JWT, bcrypt.js
-* **Frontend**: HTML5, Tailwind CSS, JavaScript
-* **Data Visualization**: Chart.js
-
----
-
-## Getting Started
-
-### Prerequisites
-
-* Node.js v18+
-* npm (Node Package Manager)
-* SQLite3
-
-### Installation
-
-1. **Clone the repository**
+1. Copy env example
 
 ```bash
-git clone https://github.com/kaifcode2003/Bank-Management-System.git
-cd Bank-Management-System
+cp backend/.env.example backend/.env
 ```
 
-2. **Install dependencies**
+2. Install dependencies and run dev server
 
 ```bash
+cd backend
 npm install
+npm run dev
 ```
 
-3. **Run the server**
+3. Seed sample data (admin + customer + accounts)
 
 ```bash
-npm start
+npm run seed
 ```
 
-4. **Access the application**
-   Open your browser and navigate to:
+API base: `http://localhost:4000/api`
 
+### Key API Routes
+
+- `POST /api/auth/register` — name, email, phone, password
+- `POST /api/auth/login` — email, password
+- `POST /api/accounts` — create account (auth)
+- `GET /api/accounts/mine` — list my accounts (auth)
+- `GET /api/accounts/:accountNumber` — account details (auth, owner/admin)
+- `PATCH /api/accounts/:accountNumber/status` — admin only
+- `POST /api/transactions/deposit` — auth, owner/admin
+- `POST /api/transactions/withdraw` — auth, owner/admin
+- `POST /api/transactions/transfer` — auth, owner/admin for source account
+- `GET /api/transactions/history/:accountNumber` — auth, owner/admin
+- `GET /api/users` — admin list users
+- `GET /api/accounts` — admin list accounts
+- `GET /api/transactions` — admin list all transactions
+
+## Frontend Setup
+
+1. Env
+
+```bash
+cp frontend/.env.example frontend/.env
 ```
-http://localhost:3000
+
+2. Install and run
+
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
----
+Frontend runs at `http://localhost:5173`
 
-## Project Structure
+## Demo Credentials
 
-```
-BankMate/
-├── backend/             # Node.js API server
-│   ├── controllers/     # Route controllers
-│   ├── middleware/      # Authentication & error handling
-│   ├── models/          # Database models
-│   ├── routes/          # API routes
-│   └── index.js         # Server entry point
-├── frontend/            # HTML, Tailwind CSS, JavaScript
-├── database/            # SQLite database files
-└── README.md
-```
+- Admin
+  - email: `admin@bankmate.local`
+  - password: `Admin@12345`
+- Customer
+  - email: `customer@bankmate.local`
+  - password: `Customer@12345`
 
----
+## Deployment
 
-## API Endpoints
+### Render (Backend)
 
-| Endpoint                | Method | Description                              |
-| ----------------------- | ------ | ---------------------------------------- |
-| `/api/auth/register`    | POST   | Register a new user                      |
-| `/api/auth/login`       | POST   | Authenticate user and generate JWT       |
-| `/api/accounts`         | GET    | Get all accounts (admin)                 |
-| `/api/accounts/:id`     | GET    | Get account details by ID                |
-| `/api/transactions`     | POST   | Perform deposit, withdrawal, or transfer |
-| `/api/transactions/:id` | GET    | Get transaction history by account       |
+- Create new Web Service from the `backend` directory
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Set environment variables:
+  - `MONGODB_URI`
+  - `JWT_SECRET`
+  - `JWT_EXPIRES_IN` (e.g. `7d`)
+  - `CLIENT_ORIGIN` (your Vercel frontend URL)
+- Expose port 10000 if using render.yaml, or default PORT provided by Render
 
----
+### Vercel (Frontend)
 
-## Security Features
+- Import the repo, set Root Directory to `frontend`
+- Framework Preset: Vite
+- Environment Variables:
+  - `VITE_API_BASE_URL` — your Render backend URL, e.g. `https://bankmate-backend.onrender.com/api`
+- Deploy
 
-* **JWT Authentication**: Secure access to APIs.
-* **Password Hashing**: User passwords stored securely using bcrypt.js.
-* **Role-Based Access Control**: Admin and user roles with restricted access.
-* **Atomic Transactions**: Ensures transfers complete fully or fail safely to maintain data integrity.
+## Notes
 
----
-
-## Future Improvements
-
-* Add support for multi-currency accounts.
-* Implement loan and interest management.
-* Integrate with email/SMS notifications for transactions.
-* Add two-factor authentication (2FA) for enhanced security.
-
----
-## Author
-
-**Mohd Kaif** – [GitHub](https://github.com/kaifcode2003) | [Portfolio](https://mohd-kaif-portfolio.vercel.app)
+- JWT stored in localStorage; Axios attaches `Authorization: Bearer <token>` automatically.
+- Transactions use Mongo sessions; ensure your Mongo deployment supports transactions (Replica Set).
