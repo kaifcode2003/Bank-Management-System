@@ -119,13 +119,6 @@ BankMate/
 * Add two-factor authentication (2FA) for enhanced security.
 
 ---
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
 ## Author
 
 **Mohd Kaif** – [GitHub](https://github.com/kaifcode2003) | [Portfolio](https://mohd-kaif-portfolio.vercel.app)
