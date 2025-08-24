@@ -10,7 +10,7 @@ const userRoutes = require('./routes/user'); // <-- NEW
 
 // --- Basic Setup ---
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;  // ✅ use Render's dynamic port
 
 // --- Middleware ---
 app.use(cors());
@@ -24,6 +24,6 @@ app.use('/api/user', userRoutes); // <-- NEW
 
 // --- Start Server ---
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log('Connected to the SQLite database.');
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log('✅ Database connected');
 });
