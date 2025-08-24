@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:deploy": "npm install && npm run build",
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview --port 5174"
   },
   "dependencies": {
